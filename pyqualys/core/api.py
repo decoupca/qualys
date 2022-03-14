@@ -1,6 +1,7 @@
 import requests
 import xmltodict
 
+
 class API(object):
     def __init__(self, username, password, hostname="qualysapi.qualys.com"):
         self.hostname = hostname
@@ -21,7 +22,7 @@ class API(object):
         # concatenate lists
         for k, v in args.items():
             if isinstance(v, list):
-                args[k] = ','.join(v)
+                args[k] = ",".join(v)
         return args
 
     def parse_response(self, response=None, index=None, data=None):
@@ -30,21 +31,30 @@ class API(object):
         timestamp = index.get("DATETIME")
         # if no code in response, treat as success (0)
         code = index.get("CODE", 0)
-        msg = index.get("TEXT")
+        warning = index.get("WARNING")
+        if warning:
+            code = warning["CODE"]
+            msg = warning["TEXT"]
+            url = warning["URL"]
+        else:
+            msg = index.get("TEXT")
+            url = None
         result = {
             "timestamp": timestamp,
-            "code": code,
+            "code": int(code),
             "msg": msg,
             "data": data,
+            "url": url,
         }
-        if code:
-            code = int(code)
+        if result["code"]:
+            code = result["code"]
             # https://www.qualys.com/docs/qualys-api-vmpc-user-guide.pdf
             # p. 750
             if code > 999:
-                raise ValueError(f"Error {code}: {msg}")
-        else:
-            return result
+                if code != 1980:
+                    # Code 1980 is paginated results
+                    raise ValueError(f"Error {code}: {msg}")
+        return result
 
     def get(self, url):
         return requests.get(url, auth=self.auth, headers=self.headers)
@@ -54,8 +64,20 @@ class API(object):
 
     def call(self, endpoint, data=None, action=None):
         url = self.build_url(endpoint, action)
-        if action == 'list':
+        if action == "list":
             response = self.get(url)
         else:
             response = self.post(url, data)
         return xmltodict.parse(response.content)
+
+    def add(self, endpoint, data):
+        return self.call(endpoint, action="add", data=data)
+
+    def delete(self, endpoint, data):
+        return self.call(endpoint, action="delete", data=data)
+
+    def list(self, endpoint):
+        return self.call(endpoint, action="list")
+
+    def update(self, endpoint, data):
+        return self.call(endpoint, action="edit", data=data)

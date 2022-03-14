@@ -15,7 +15,7 @@ for host in ios_hosts:
 
 
 group_id = "12249485"
-#pprint(qualys.asset.group.list())
+# host_list = qualys.asset.host.list()
 response = qualys.asset.group.update(
     id=group_id,
     set_ips=ips,
