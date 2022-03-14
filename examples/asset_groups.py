@@ -16,14 +16,13 @@ for host in ios_hosts:
 
 group_id = "12249485"
 # host_list = qualys.asset.host.list()
-ips = qualys.asset.ip.list()
-#response = qualys.asset.group.update(
-#    id=group_id,
-#    set_ips=ips,
-#    set_comments="All IOS hosts updated from NetBox",
-#    set_business_impact="High",
-#)
-#pprint(response)
+response = qualys.asset.group.update(
+    id=group_id,
+    set_ips=ips,
+    set_comments="All IOS hosts updated from NetBox",
+    set_business_impact="High",
+)
+pprint(response)
 
 
 import ipdb
