@@ -1,117 +1,13 @@
 import requests
 import xmltodict
 import ipdb
+from pyqualys.core.api import API
+from pyqualys.models.asset import Asset
+
 
 class Qualys(object):
     def __init__(self, username, password, hostname="qualysapi.qualys.com"):
-        self.hostname = hostname
-        self.username = username
-        self.password = password
-        self.auth = (self.username, self.password)
-        self.headers = {
-            "X-Requested-With": "pyqualys",
-        }
+        self.api = API(username, password, hostname)
+        self.asset = Asset(self.api)
 
-    def _build_url(self, endpoint):
-        return f"https://{self.hostname}/{endpoint}"
 
-    def _parse_response(self, response):
-        response = response['SIMPLE_RETURN']['RESPONSE']
-        timestamp = response.get('DATETIME')
-        code = response.get('CODE')
-        msg = response.get('TEXT')
-        result = {
-            'timestamp': timestamp,
-            'code': code,
-            'msg': msg,
-        }
-        if code:
-            code = int(code)
-            # https://www.qualys.com/docs/qualys-api-vmpc-user-guide.pdf
-            # p. 750
-            if code > 999:
-                raise ValueError(f'Error {code}: {msg}')
-        else:
-            return result
-
-    def _get(self, endpoint):
-        url = self._build_url(endpoint)
-        response = requests.get(url, auth=self.auth, headers=self.headers)
-        return xmltodict.parse(response.content)
-
-    def _post(self, endpoint, data):
-        url = self._build_url(endpoint)
-        # filter out empty vars
-        data = {k: v for k, v in data.items() if v is not None}
-        # concatenate lists
-        for k, v in data.items():
-            if isinstance(v, list):
-                data[k] = ','.join(v)
-        response = requests.post(url, data=data, auth=self.auth, headers=self.headers)
-        return xmltodict.parse(response.content)
-
-    def list_asset_groups(self):
-        endpoint = "/api/2.0/fo/asset/group/?action=list"
-        response = self._get(endpoint)
-        return response["ASSET_GROUP_LIST_OUTPUT"]["RESPONSE"]["ASSET_GROUP_LIST"][
-            "ASSET_GROUP"
-        ]
-
-    def update_asset_group(
-        self,
-        group_id,
-        add_appliance_ids=None,
-        add_dns_names=None,
-        add_ips=None,
-        add_netbios_names=None,
-        business_impact=None,
-        comments=None,
-        cvss_enviro_ar=None,
-        cvss_enviro_cdp=None,
-        cvss_enviro_cr=None,
-        cvss_enviro_ir=None,
-        cvss_enviro_td=None,
-        default_appliance_id=None,
-        division=None,
-        function=None,
-        location=None,
-        remove_appliance_ids=None,
-        remove_dns_names=None,
-        remove_ips=None,
-        remove_netbios_names=None,
-        set_appliance_ids=None,
-        set_dns_names=None,
-        set_ips=None,
-        set_netbios_names=None,
-        title=None,
-    ):
-        endpoint = "/api/2.0/fo/asset/group/?action=edit"
-        data = {
-            'id': group_id,
-            'add_appliance_ids': add_appliance_ids,
-            'add_dns_names': add_dns_names,
-            'add_ips': add_ips,
-            'add_netbios_names': add_netbios_names,
-            'cvss_enviro_ar': cvss_enviro_ar,
-            'cvss_enviro_cdp': cvss_enviro_cdp,
-            'cvss_enviro_cr': cvss_enviro_cr,
-            'cvss_enviro_ir': cvss_enviro_ir,
-            'cvss_enviro_td': cvss_enviro_td,
-            'default_appliance_id': default_appliance_id,
-            'remove_appliance_ids': remove_appliance_ids,
-            'remove_dns_names': remove_dns_names,
-            'remove_ips': remove_ips,
-            'remove_netbios_names': remove_netbios_names,
-            'set_appliance_ids': set_appliance_ids,
-            'set_business_impact': business_impact.capitalize(),
-            'set_comments': comments,
-            'set_divison': division,
-            'set_dns_names': set_dns_names,
-            'set_function': function,
-            'set_ips': set_ips,
-            'set_location': location,
-            'set_netbios_names': set_netbios_names,
-            'set_title': title,
-        }
-        response = self._post(endpoint, data=data)
-        return self._parse_response(response)

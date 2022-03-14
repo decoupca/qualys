@@ -1,7 +1,7 @@
-import pyqualys
 from pprint import pprint
 from netdev import config
 from netdev.netbox import nb
+import pyqualys
 
 
 qualys = pyqualys.Qualys(
@@ -15,11 +15,12 @@ for host in ios_hosts:
 
 
 group_id = "12249485"
-response = qualys.update_asset_group(
+#pprint(qualys.asset.group.list())
+response = qualys.asset.group.update(
     group_id=group_id,
     set_ips=ips,
     comments="All IOS hosts updated from NetBox",
-    business_impact="Low",
+    business_impact="High",
 )
 pprint(response)
 
