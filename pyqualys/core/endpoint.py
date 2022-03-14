@@ -1,7 +1,8 @@
 class Endpoint(object):
-    def __init__(self, api):
+    def __init__(self, api, endpoint, result_key):
         self.api = api
-        self.endpoint = ""
+        self.endpoint = endpoint
+        self.result_key = result_key
 
     def add(self, **kwargs):
         data = self.api.parse_args(kwargs)
@@ -15,7 +16,7 @@ class Endpoint(object):
 
     def list(self):
         response = self.api.list(self.endpoint)
-        return self.api.parse_response(response)
+        return self.api.parse_response(response, self.result_key)
 
     def update(self, **kwargs):
         data = self.api.parse_args(kwargs)

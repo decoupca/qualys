@@ -25,9 +25,16 @@ class API(object):
                 args[k] = ",".join(v)
         return args
 
-    def parse_response(self, response=None, index=None, data=None):
-        if index is None:
+    def parse_response(self, response, result_key=None):
+        if result_key:
+            result_key = result_key.upper()
+            key = f"{result_key}_LIST_OUTPUT"
+            index = response[key]["RESPONSE"]
+            data = index[f"{result_key}_LIST"][result_key]
+        else:
             index = response["SIMPLE_RETURN"]["RESPONSE"]
+            data = None
+
         timestamp = index.get("DATETIME")
         # if no code in response, treat as success (0)
         code = index.get("CODE", 0)
