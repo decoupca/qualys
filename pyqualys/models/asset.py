@@ -3,11 +3,11 @@ from pyqualys.core.endpoint import Endpoint
 
 class Asset(object):
     def __init__(self, api):
-        self.host = Endpoint(api, "/api/2.0/fo/asset/host/", "host")
-        self.group = Endpoint(api, "/api/2.0/fo/asset/group/", "asset_group")
+        self.host = Endpoint(api, "/api/2.0/fo/asset/host/", 'host')
+        self.group = Endpoint(api, "/api/2.0/fo/asset/group/", 'asset_group')
+        self.ip = Endpoint(api, '/api/2.0/fo/asset/ip/', 'ip', 'ip_set')
 
-
-# class Host(Endpoint):
+#class Host(Endpoint):
 #    def __init__(self, api):
 #        self.endpoint = "/api/2.0/fo/asset/host/"
 #
@@ -18,7 +18,7 @@ class Asset(object):
 #        return self.api.parse_response(index=index, data=data)
 #
 #
-# class Group(Endpoint):
+#class Group(Endpoint):
 #    def __init__(self, api):
 #        self.endpoint = "/api/2.0/fo/asset/group/"
 #

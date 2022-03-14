@@ -25,12 +25,15 @@ class API(object):
                 args[k] = ",".join(v)
         return args
 
-    def parse_response(self, response, result_key=None):
-        if result_key:
-            result_key = result_key.upper()
-            key = f"{result_key}_LIST_OUTPUT"
+    def parse_response(self, response, index_key=None, data_key=None):
+        if index_key:
+            index_key = index_key.upper()
+            key = f"{index_key}_LIST_OUTPUT"
             index = response[key]["RESPONSE"]
-            data = index[f"{result_key}_LIST"][result_key]
+            if data_key:
+                data = index[data_key.upper()]
+            else:
+                data = index[f'{index_key}_LIST']
         else:
             index = response["SIMPLE_RETURN"]["RESPONSE"]
             data = None
