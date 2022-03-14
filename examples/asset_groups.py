@@ -1,12 +1,29 @@
 import pyqualys
 from pprint import pprint
 from netdev import config
+from netdev.netbox import nb
+
 
 qualys = pyqualys.Qualys(
     config.QUALYS_USERNAME, config.QUALYS_PASSWORD, config.QUALYS_SERVER
 )
 
-group_id = '12249485'
-response = qualys.update_asset_group(group_id=group_id, set_ips="172.16.16.254,10.2.3.4,192.168.1.1")
+ios_hosts = nb.dcim.devices.filter(platform="ios", status="active", has_primary_ip=True)
+ips = []
+for host in ios_hosts:
+    ips.append(host.primary_ip4.address.split("/")[0])
+
+
+group_id = "12249485"
+response = qualys.update_asset_group(
+    group_id=group_id,
+    set_ips=ips,
+    comments="All IOS hosts updated from NetBox",
+    business_impact="Low",
+)
 pprint(response)
-#import ipdb; ipdb.set_trace()
+
+
+import ipdb
+
+ipdb.set_trace()

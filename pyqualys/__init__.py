@@ -16,18 +16,23 @@ class Qualys(object):
         return f"https://{self.hostname}/{endpoint}"
 
     def _parse_response(self, response):
-        result = {}
         response = response['SIMPLE_RETURN']['RESPONSE']
         timestamp = response.get('DATETIME')
         code = response.get('CODE')
         msg = response.get('TEXT')
-        if timestamp:
-            result.update({'timestamp': timestamp})
+        result = {
+            'timestamp': timestamp,
+            'code': code,
+            'msg': msg,
+        }
         if code:
-            result.update({'code': int(code)})
-        if msg:
-            result.update({'msg': msg})
-        return result
+            code = int(code)
+            # https://www.qualys.com/docs/qualys-api-vmpc-user-guide.pdf
+            # p. 750
+            if code > 999:
+                raise ValueError(f'Error {code}: {msg}')
+        else:
+            return result
 
     def _get(self, endpoint):
         url = self._build_url(endpoint)
@@ -36,7 +41,12 @@ class Qualys(object):
 
     def _post(self, endpoint, data):
         url = self._build_url(endpoint)
+        # filter out empty vars
         data = {k: v for k, v in data.items() if v is not None}
+        # concatenate lists
+        for k, v in data.items():
+            if isinstance(v, list):
+                data[k] = ','.join(v)
         response = requests.post(url, data=data, auth=self.auth, headers=self.headers)
         return xmltodict.parse(response.content)
 
@@ -93,7 +103,7 @@ class Qualys(object):
             'remove_ips': remove_ips,
             'remove_netbios_names': remove_netbios_names,
             'set_appliance_ids': set_appliance_ids,
-            'set_business_impact': business_impact,
+            'set_business_impact': business_impact.capitalize(),
             'set_comments': comments,
             'set_divison': division,
             'set_dns_names': set_dns_names,
