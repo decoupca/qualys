@@ -17,6 +17,13 @@ class API(object):
             url = f"{url}?action={action}"
         return url
 
+    def parse_args(self, args):
+        # concatenate lists
+        for k, v in args.items():
+            if isinstance(v, list):
+                args[k] = ','.join(v)
+        return args
+
     def parse_response(self, response=None, index=None, data=None):
         if index is None:
             index = response["SIMPLE_RETURN"]["RESPONSE"]
@@ -40,22 +47,15 @@ class API(object):
             return result
 
     def get(self, url):
-        response = requests.get(url, auth=self.auth, headers=self.headers)
-        return xmltodict.parse(response.content)
+        return requests.get(url, auth=self.auth, headers=self.headers)
 
     def post(self, url, data):
-        # filter out empty vars
-        data = {k: v for k, v in data.items() if v is not None}
-        # concatenate lists
-        for k, v in data.items():
-            if isinstance(v, list):
-                data[k] = ",".join(v)
-        response = requests.post(url, data=data, auth=self.auth, headers=self.headers)
-        return xmltodict.parse(response.content)
+        return requests.post(url, data=data, auth=self.auth, headers=self.headers)
 
     def call(self, endpoint, data=None, action=None):
         url = self.build_url(endpoint, action)
         if action == 'list':
-            return self.get(url)
+            response = self.get(url)
         else:
-            return self.post(url, data)
+            response = self.post(url, data)
+        return xmltodict.parse(response.content)

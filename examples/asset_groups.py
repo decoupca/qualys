@@ -17,10 +17,10 @@ for host in ios_hosts:
 group_id = "12249485"
 #pprint(qualys.asset.group.list())
 response = qualys.asset.group.update(
-    group_id=group_id,
+    id=group_id,
     set_ips=ips,
-    comments="All IOS hosts updated from NetBox",
-    business_impact="High",
+    set_comments="All IOS hosts updated from NetBox",
+    set_business_impact="High",
 )
 pprint(response)
 
