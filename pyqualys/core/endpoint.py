@@ -6,7 +6,7 @@ class Endpoint(BasicEndpoint):
         self.data_key = data_key
 
     def get(self, raw=False, **kwargs):
-        pass
+        return self.api.get(self.endpoint, data=data)
 
     def add(self, raw=False, **kwargs):
         data = self.api.parse_args(kwargs)
