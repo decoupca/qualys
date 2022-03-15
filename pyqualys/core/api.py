@@ -8,12 +8,13 @@ class API(object):
         self.username = username
         self.password = password
         self.auth = (self.username, self.password)
+        self.path = 'api/2.0/fo'
         self.headers = {
             "X-Requested-With": "pyqualys",
         }
 
     def build_url(self, endpoint, action=None):
-        url = f"https://{self.hostname}/{endpoint}"
+        url = f"https://{self.hostname}/{self.path}{endpoint}/"
         if action:
             url = f"{url}?action={action}"
         return url
@@ -31,9 +32,9 @@ class API(object):
             key = f"{index_key}_LIST_OUTPUT"
             index = response[key]["RESPONSE"]
             if data_key:
-                data = index[data_key.upper()]
+                data = index.get(data_key.upper())
             else:
-                data = index[f'{index_key}_LIST']
+                data = index.get(f'{index_key}_LIST')
         else:
             index = response["SIMPLE_RETURN"]["RESPONSE"]
             data = None

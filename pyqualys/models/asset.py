@@ -3,9 +3,10 @@ from pyqualys.core.endpoint import Endpoint
 
 class Asset(object):
     def __init__(self, api):
-        self.host = Endpoint(api, "/api/2.0/fo/asset/host/", 'host')
-        self.group = Endpoint(api, "/api/2.0/fo/asset/group/", 'asset_group')
-        self.ip = Endpoint(api, '/api/2.0/fo/asset/ip/', 'ip', 'ip_set')
+        self.host = Endpoint(api, "/asset/host", 'host')
+        self.group = Endpoint(api, "/asset/group", 'asset_group')
+        self.ip = Endpoint(api, '/asset/ip', 'ip', 'ip_set')
+        self.vhost = Endpoint(api, '/asset/vhost', 'virtual_host')
 
 #class Host(Endpoint):
 #    def __init__(self, api):
