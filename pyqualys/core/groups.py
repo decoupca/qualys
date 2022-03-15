@@ -10,8 +10,10 @@ class Asset(object):
         self.host.vm = Endpoint(api, '/asset/host/vm')
         self.host.vm.detection = Endpoint(api, '/asset/host/vm/detection', 'host_list_vm_detection', 'host')
         self.ip = Endpoint(api, '/asset/ip', 'ip', 'ip_set')
+        self.patch = Endpoint(api, '/asset/patch/index.php')
         self.vhost = Endpoint(api, '/asset/vhost', 'virtual_host')
 
 class Setup(object):
     def __init__(self, api):
         self.restricted_ips = Endpoint(api, '/setup/restricted_ips', 'restricted_ips', 'ip_set')
+

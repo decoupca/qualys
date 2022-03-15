@@ -1,9 +1,12 @@
-class Endpoint(object):
+class Endpoint(BasicEndpoint):
     def __init__(self, api, endpoint, result_key=None, data_key=None):
         self.api = api
         self.endpoint = endpoint
         self.result_key = result_key
         self.data_key = data_key
+
+    def get(self, raw=False, **kwargs):
+        pass
 
     def add(self, raw=False, **kwargs):
         data = self.api.parse_args(kwargs)
@@ -23,3 +26,4 @@ class Endpoint(object):
         data = self.api.parse_args(kwargs)
         response = self.api.call(self.endpoint, data=data, action='edit')
         return self.api.parse_response(response, raw=raw)
+
