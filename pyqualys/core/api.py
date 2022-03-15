@@ -26,7 +26,9 @@ class API(object):
                 args[k] = ",".join(v)
         return args
 
-    def parse_response(self, response, index_key=None, data_key=None):
+    def parse_response(self, response, index_key=None, data_key=None, raw=False):
+        if raw:
+            return response
         if index_key:
             index_key = index_key.upper()
             key = f"{index_key}_LIST_OUTPUT"
@@ -80,15 +82,3 @@ class API(object):
         else:
             response = self.post(url, data)
         return xmltodict.parse(response.content)
-
-    def add(self, endpoint, data):
-        return self.call(endpoint, action="add", data=data)
-
-    def delete(self, endpoint, data):
-        return self.call(endpoint, action="delete", data=data)
-
-    def list(self, endpoint):
-        return self.call(endpoint, action="list")
-
-    def update(self, endpoint, data):
-        return self.call(endpoint, action="edit", data=data)

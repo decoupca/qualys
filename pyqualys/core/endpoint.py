@@ -1,25 +1,25 @@
 class Endpoint(object):
-    def __init__(self, api, endpoint, result_key, data_key=None):
+    def __init__(self, api, endpoint, result_key=None, data_key=None):
         self.api = api
         self.endpoint = endpoint
         self.result_key = result_key
         self.data_key = data_key
 
-    def add(self, **kwargs):
+    def add(self, raw=False, **kwargs):
         data = self.api.parse_args(kwargs)
-        response = self.api.add(self.endpoint, data=data)
-        return self.api.parse_response(response)
+        response = self.api.call(self.endpoint, data=data, action='add')
+        return self.api.parse_response(response, raw=raw)
 
-    def delete(self, **kwargs):
+    def delete(self, raw=False, **kwargs):
         data = self.api.parse_args(kwargs)
-        response = self.api.update(self.endpoint, data=data)
-        return self.api.parse_response(response)
+        response = self.api.call(self.endpoint, data=data, action='delete')
+        return self.api.parse_response(response, raw=raw)
 
-    def list(self):
-        response = self.api.list(self.endpoint)
-        return self.api.parse_response(response, self.result_key, self.data_key)
+    def list(self, raw=False):
+        response = self.api.call(self.endpoint, action='list')
+        return self.api.parse_response(response, self.result_key, self.data_key, raw=raw)
 
-    def update(self, **kwargs):
+    def update(self, raw=False, **kwargs):
         data = self.api.parse_args(kwargs)
-        response = self.api.update(self.endpoint, data=data)
-        return self.api.parse_response(response)
+        response = self.api.call(self.endpoint, data=data, action='edit')
+        return self.api.parse_response(response, raw=raw)
