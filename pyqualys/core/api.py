@@ -8,7 +8,7 @@ class API(object):
         self.username = username
         self.password = password
         self.auth = (self.username, self.password)
-        self.path = 'api/2.0/fo'
+        self.path = "api/2.0/fo"
         self.headers = {
             "X-Requested-With": "pyqualys",
         }
@@ -36,7 +36,7 @@ class API(object):
             if data_key:
                 data = index.get(data_key.upper())
             else:
-                data = index.get(f'{index_key}_LIST')
+                data = index.get(f"{index_key}_LIST")
         else:
             index = response["SIMPLE_RETURN"]["RESPONSE"]
             data = None

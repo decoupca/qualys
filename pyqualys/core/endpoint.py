@@ -10,20 +10,21 @@ class Endpoint(object):
 
     def add(self, raw=False, **kwargs):
         data = self.api.parse_args(kwargs)
-        response = self.api.call(self.endpoint, data=data, action='add')
+        response = self.api.call(self.endpoint, data=data, action="add")
         return self.api.parse_response(response, raw=raw)
 
     def delete(self, raw=False, **kwargs):
         data = self.api.parse_args(kwargs)
-        response = self.api.call(self.endpoint, data=data, action='delete')
+        response = self.api.call(self.endpoint, data=data, action="delete")
         return self.api.parse_response(response, raw=raw)
 
     def list(self, raw=False):
-        response = self.api.call(self.endpoint, action='list')
-        return self.api.parse_response(response, self.result_key, self.data_key, raw=raw)
+        response = self.api.call(self.endpoint, action="list")
+        return self.api.parse_response(
+            response, self.result_key, self.data_key, raw=raw
+        )
 
     def update(self, raw=False, **kwargs):
         data = self.api.parse_args(kwargs)
-        response = self.api.call(self.endpoint, data=data, action='edit')
+        response = self.api.call(self.endpoint, data=data, action="edit")
         return self.api.parse_response(response, raw=raw)
-
