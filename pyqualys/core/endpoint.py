@@ -1,4 +1,4 @@
-class Endpoint(BasicEndpoint):
+class Endpoint(object):
     def __init__(self, api, endpoint, result_key=None, data_key=None):
         self.api = api
         self.endpoint = endpoint
