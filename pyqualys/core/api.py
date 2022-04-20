@@ -1,5 +1,6 @@
 import requests
 import xmltodict
+from urllib.parse import urlencode
 
 
 class API(object):
@@ -13,10 +14,10 @@ class API(object):
             "X-Requested-With": "pyqualys",
         }
 
-    def build_url(self, endpoint, action=None):
+    def build_url(self, endpoint, query=None):
         url = f"https://{self.hostname}/{self.path}{endpoint}/"
-        if action:
-            url = f"{url}?action={action}"
+        if query:
+            url = f"{url}?{urlencode(query)}"
         return url
 
     def parse_args(self, args):
@@ -76,9 +77,13 @@ class API(object):
         return requests.post(url, data=data, auth=self.auth, headers=self.headers)
 
     def call(self, endpoint, data=None, action=None):
-        url = self.build_url(endpoint, action)
         if action == "list":
+            query = {'action': 'list'}
+            if data:
+                query.update(data)
+            url = self.build_url(endpoint, query)
             response = self.get(url)
         else:
+            url = self.build_url(endpoint)
             response = self.post(url, data)
         return xmltodict.parse(response.content)

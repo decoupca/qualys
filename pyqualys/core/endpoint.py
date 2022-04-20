@@ -5,8 +5,8 @@ class Endpoint(object):
         self.result_key = result_key
         self.data_key = data_key
 
-    def get(self, raw=False, **kwargs):
-        return self.api.get(self.endpoint, data=data)
+    def get(self):
+        return self.api.get(self.endpoint)
 
     def add(self, raw=False, **kwargs):
         data = self.api.parse_args(kwargs)
@@ -18,8 +18,9 @@ class Endpoint(object):
         response = self.api.call(self.endpoint, data=data, action="delete")
         return self.api.parse_response(response, raw=raw)
 
-    def list(self, raw=False):
-        response = self.api.call(self.endpoint, action="list")
+    def list(self, raw=False, **kwargs):
+        data = self.api.parse_args(kwargs)
+        response = self.api.call(self.endpoint, data=data, action="list")
         return self.api.parse_response(
             response, self.result_key, self.data_key, raw=raw
         )
