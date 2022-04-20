@@ -78,7 +78,7 @@ class API(object):
 
     def call(self, endpoint, data=None, action=None):
         if action == "list":
-            query = {'action': 'list'}
+            query = {"action": "list"}
             if data:
                 query.update(data)
             url = self.build_url(endpoint, query)

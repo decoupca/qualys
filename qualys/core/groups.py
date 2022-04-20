@@ -1,4 +1,4 @@
-from pyqualys.core.endpoint import Endpoint
+from qualys.core.endpoint import Endpoint
 
 
 class Asset(object):

@@ -1,7 +1,7 @@
 from pprint import pprint
 from netdev import config
 from netdev.netbox import nb
-import pyqualys
+import qualys
 import ipdb
 import subprocess
 from tqdm.contrib.concurrent import thread_map
@@ -9,7 +9,7 @@ from pandas import DataFrame
 
 THREADS = 20
 
-qualys = pyqualys.Qualys(
+qualys = qualys.api(
     config.QUALYS_USERNAME, config.QUALYS_PASSWORD, config.QUALYS_SERVER
 )
 
@@ -53,7 +53,7 @@ def get_nb_info(device):
         "hostname": device.name,
         "ip": ip,
         "reachable": is_reachable(ip),
-        'url': device.url.replace('/api', ''),
+        "url": device.url.replace("/api", ""),
     }
 
 
