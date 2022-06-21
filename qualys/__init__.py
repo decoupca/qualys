@@ -9,3 +9,7 @@ class api(object):
         self.api = API(username, password, hostname)
         self.asset = Asset(self.api)
         self.setup = Setup(self.api)
+
+__all__ = [
+    api
+]
