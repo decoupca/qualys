@@ -77,13 +77,15 @@ class API(object):
         return requests.post(url, data=data, auth=self.auth, headers=self.headers)
 
     def call(self, endpoint, data=None, action=None):
+        if action is not None:
+            query = {"action": action}
+        else:
+            query = {}
+        url = self.build_url(endpoint, query)
         if action == "list":
-            query = {"action": "list"}
             if data:
                 query.update(data)
-            url = self.build_url(endpoint, query)
             response = self.get(url)
         else:
-            url = self.build_url(endpoint)
             response = self.post(url, data)
         return xmltodict.parse(response.content)
