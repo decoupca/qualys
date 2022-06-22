@@ -1,5 +1,3 @@
-import requests
-import xmltodict
 from qualys.core.api import API
 from qualys.core.groups import Asset, Setup
 
