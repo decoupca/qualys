@@ -83,9 +83,10 @@ class API(object):
             query = {}
         url = self.build_url(endpoint, query)
         if action == "list":
-            if data:
-                query.update(data)
-            response = self.get(url)
+            if data is not None:
+                response = self.post(url, data)
+            else:
+                response = self.get(url)
         else:
             response = self.post(url, data)
         return xmltodict.parse(response.content)
